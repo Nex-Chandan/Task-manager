@@ -67,7 +67,7 @@ const login = async (req, res) => {
       });
     }
 
-    // Must include password field (schema has select:false)
+    
     const user = await User.findByEmail(email);
 
     if (!user) {

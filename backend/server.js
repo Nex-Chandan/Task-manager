@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 import connectDb  from "./config/db.js";
 import router from "./routes/AuthRoutes.js"
+import router1 from "./routes/Taskroutes.js"
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ connectDb();
 
 // routes
 app.use("/api/auth", router);
+app.use("/api/task",router1);
 
 
 app.listen(port, () => {
