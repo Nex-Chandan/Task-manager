@@ -39,8 +39,46 @@ const register = asyncHandler(async (req, res, next) => {
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return next(new AppError("Please provide email and password", 400));
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and password",
+      });
+    }
+
+    
+    const user = await User.findByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged in successfully",
+      token,
+      user: user.toPublicJSON(),
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
   }
 
   // Must include password field (schema has select:false)
