@@ -1,123 +1,71 @@
 import User from "../modals/User.js";
 import generateToken from "../utills/genrateToken.js";
+import AppError from "../utills/AppError.js";
+import asyncHandler from "../utills/asyncHandler.js";
 
 // Register
-const register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+const register = asyncHandler(async (req, res, next) => {
+  const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide name, email and password",
-      });
-    }
-
-    const existingUser = await User.findOne({
-      email: email.toLowerCase(),
-    });
-
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "Account with this email already exists",
-      });
-    }
-
-    const user = await User.create({
-      name,
-      email: email.toLowerCase(),
-      password,
-    });
-
-    const token = generateToken(user._id);
-
-    return res.status(201).json({
-      success: true,
-      message: "Account created successfully",
-      token,
-      user: user.toPublicJSON(),
-    });
-  } catch (err) {
-    if (err.name === "ValidationError") {
-      const messages = Object.values(err.errors).map((e) => e.message);
-      return res.status(400).json({
-        success: false,
-        message: messages.join(", "),
-      });
-    }
-
-    console.error("Registration error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error. Try again later.",
-    });
+  if (!name || !email || !password) {
+    return next(new AppError("Please provide name, email and password", 400));
   }
-};
+
+  const existingUser = await User.findOne({
+    email: email.toLowerCase(),
+  });
+
+  if (existingUser) {
+    return next(new AppError("Account with this email already exists", 409));
+  }
+
+  const user = await User.create({
+    name,
+    email: email.toLowerCase(),
+    password,
+  });
+
+  const token = generateToken(user._id);
+
+  return res.status(201).json({
+    success: true,
+    message: "Account created successfully",
+    token,
+    user: user.toPublicJSON(),
+  });
+});
 
 // Login
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+const login = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide email and password",
-      });
-    }
-
-    // Must include password field (schema has select:false)
-    const user = await User.findByEmail(email);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    const isMatch = await user.comparePassword(password);
-
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    const token = generateToken(user._id);
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      token,
-      user: user.toPublicJSON(),
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error. Please try again later.",
-    });
+  if (!email || !password) {
+    return next(new AppError("Please provide email and password", 400));
   }
-};
+
+  // Must include password field (schema has select:false)
+  const user = await User.findByEmail(email);
+
+  if (!user || !(await user.comparePassword(password))) {
+    return next(new AppError("Invalid email or password", 401));
+  }
+
+  const token = generateToken(user._id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged in successfully",
+    token,
+    user: user.toPublicJSON(),
+  });
+});
 
 // Get Current User
-const getMe = async (req, res) => {
-  try {
-    return res.status(200).json({
-      success: true,
-      user: req.user.toPublicJSON(),
-    });
-  } catch (err) {
-    console.error("GetMe error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
+const getMe = asyncHandler(async (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    user: req.user.toPublicJSON(),
+  });
+});
 
 export { register, login, getMe };
-

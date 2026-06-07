@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 
 import connectDb  from "./config/db.js";
 import router from "./routes/AuthRoutes.js"
+import { errorHandler } from "./middleware/errorMiddleware.js";
+import AppError from "./utills/AppError.js";
 
 dotenv.config();
 
@@ -22,6 +24,13 @@ connectDb();
 // routes
 app.use("/api/auth", router);
 
+// 404 handler
+app.use((req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// Global Error Handler
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`server started at ${port}`);
