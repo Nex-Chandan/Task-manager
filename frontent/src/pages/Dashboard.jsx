@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { fetchTasks, createTask, updateTask, deleteTask, toggleStatus } from "../api/api";
+import {
+  fetchTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  toggleStatus,
+} from "../api/api.js";
 import Navbar from "../components/Navbar";
 import TaskForm from "../components/TaskForm";
 import TaskCard from "../components/TaskCard";
 
 const Dashboard = () => {
-  const [tasks, setTasks]       = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [editTask, setEditTask] = useState(null);
-  const [filter, setFilter]     = useState("all");
-  const [search, setSearch]     = useState("");
-  const [loading, setLoading]   = useState(true);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => { loadTasks(); }, []);
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
   const loadTasks = async () => {
     try {
@@ -73,13 +81,13 @@ const Dashboard = () => {
     .filter((t) => filter === "all" || t.status === filter)
     .filter((t) => t.title.toLowerCase().includes(search.toLowerCase()));
 
-  const total     = tasks.length;
+  const total = tasks.length;
   const completed = tasks.filter((t) => t.status === "completed").length;
-  const pending   = tasks.filter((t) => t.status === "pending").length;
+  const pending = tasks.filter((t) => t.status === "pending").length;
 
   const filters = [
-    { key: "all",       label: "All" },
-    { key: "pending",   label: "⏳ Pending" },
+    { key: "all", label: "All" },
+    { key: "pending", label: "⏳ Pending" },
     { key: "completed", label: "✓ Completed" },
   ];
 
@@ -88,20 +96,25 @@ const Dashboard = () => {
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-2xl shadow-sm p-5 text-center border border-gray-100">
             <p className="text-3xl font-bold text-indigo-600">{total}</p>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">Total</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">
+              Total
+            </p>
           </div>
           <div className="bg-white rounded-2xl shadow-sm p-5 text-center border border-gray-100">
             <p className="text-3xl font-bold text-amber-500">{pending}</p>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">Pending</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">
+              Pending
+            </p>
           </div>
           <div className="bg-white rounded-2xl shadow-sm p-5 text-center border border-gray-100">
             <p className="text-3xl font-bold text-green-500">{completed}</p>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">Completed</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-1">
+              Completed
+            </p>
           </div>
         </div>
 
@@ -140,7 +153,8 @@ const Dashboard = () => {
 
         {/* Task count */}
         <p className="text-xs text-gray-400 mb-3">
-          Showing {filteredTasks.length} task{filteredTasks.length !== 1 ? "s" : ""}
+          Showing {filteredTasks.length} task
+          {filteredTasks.length !== 1 ? "s" : ""}
         </p>
 
         {/* Task List */}
@@ -152,9 +166,13 @@ const Dashboard = () => {
         ) : filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <span className="text-5xl mb-4">📋</span>
-            <p className="text-base font-medium text-gray-500">No tasks found</p>
+            <p className="text-base font-medium text-gray-500">
+              No tasks found
+            </p>
             <p className="text-sm mt-1">
-              {search ? "Try a different search term." : "Add your first task above!"}
+              {search
+                ? "Try a different search term."
+                : "Add your first task above!"}
             </p>
           </div>
         ) : (
