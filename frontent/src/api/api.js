@@ -21,8 +21,9 @@ export const getMe=()=>API.get("/auth/me");
 
 
 //task
-export const fetchTask=()=>API.get("/tasks");
-export const createTask=(data)=>API.post("/tasks",data);
-export const updateTask=(id,data)=>API.put(`/tasks/${id}/status`);
-export const toggleStatus=(id)=>API.patch(`/tasks/${id}/status`);
-export const deleteTask=(id)=>API.delete(`/tasks/${id}`);
+export const fetchTasks = () => API.get("/tasks");
+export const fetchTask = () => API.get("/tasks");
+export const createTask = (data) => API.post("/tasks", data);
+export const updateTask = (id, data) => API.put(`/tasks/${id}/status`, data);
+export const toggleStatus = (id) => API.patch(`/tasks/${id}/status`);
+export const deleteTask = (id) => API.delete(`/tasks/${id}`);
