@@ -8,7 +8,7 @@ import {
   updateTask,
   toggleStatus,
   deleteTask,
-} from "../controllers/taskController.js";
+} from "../controllers/TaskController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
 
