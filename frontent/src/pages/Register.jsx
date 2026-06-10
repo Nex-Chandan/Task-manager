@@ -80,7 +80,7 @@ const Register = () => {
             <input
               type="password"
               name="password"
-              placeholder="Min 6 characters"
+              placeholder="Min 8 characters"
               value={form.password}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:border-indigo-500 focus:bg-white transition"
