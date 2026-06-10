@@ -6,7 +6,7 @@ A full-stack Task Management Web Application built with MongoDB, Express.js, Rea
 
 ## Screenshots
 
-> Add your screenshots here after running the project.
+live->   https://grand-lolly-8b7ab4.netlify.app/
 
 ---
 
