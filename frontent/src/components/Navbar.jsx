@@ -10,6 +10,8 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const actualUser = user?.user || user;
+
   const getInitials = (name) => {
     if (!name) return "U";
     return name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
@@ -39,12 +41,12 @@ const Navbar = () => {
                   Welcome back
                 </p>
                 <p className="text-white font-bold m-0 leading-tight flex items-center justify-end gap-1">
-                  {user.name.split(" ")[0]}
+                  {actualUser?.name?.split(" ")[0] || "User"}
                   <span className="origin-bottom-right group-hover:rotate-12 transition-transform duration-300 text-lg">👋</span>
                 </p>
               </div>
               <div className="w-11 h-11 rounded-full bg-white/20 border-2 border-white/50 flex items-center justify-center text-white font-bold text-lg shadow-inner group-hover:bg-white group-hover:text-indigo-600 transition-all duration-300 group-hover:scale-105">
-                {getInitials(user.name)}
+                {getInitials(actualUser?.name)}
               </div>
             </div>
 

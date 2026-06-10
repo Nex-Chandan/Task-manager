@@ -17,10 +17,16 @@ const Dashboard = () => {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const tasksPerPage = 5;
 
   useEffect(() => {
     loadTasks();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, search]);
 
   const loadTasks = async () => {
     try {
@@ -80,6 +86,11 @@ const Dashboard = () => {
   const filteredTasks = tasks
     .filter((t) => filter === "all" || t.status === filter)
     .filter((t) => t.title.toLowerCase().includes(search.toLowerCase()));
+
+  const indexOfLastTask = currentPage * tasksPerPage;
+  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
+  const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
 
   const total = tasks.length;
   const completed = tasks.filter((t) => t.status === "completed").length;
@@ -176,15 +187,40 @@ const Dashboard = () => {
             </p>
           </div>
         ) : (
-          filteredTasks.map((task) => (
-            <TaskCard
-              key={task._id}
-              task={task}
-              onDelete={handleDelete}
-              onToggle={handleToggle}
-              onEdit={handleEdit}
-            />
-          ))
+          <>
+            {currentTasks.map((task) => (
+              <TaskCard
+                key={task._id}
+                task={task}
+                onDelete={handleDelete}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+              />
+            ))}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8 mb-4">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  Previous
+                </button>
+                <span className="text-sm font-medium text-gray-500">
+                  Page <span className="text-gray-800">{currentPage}</span> of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import connectDb  from "./config/db.js";
 import router from "./routes/AuthRoutes.js"
 import router1 from "./routes/Taskroutes.js"
@@ -14,6 +14,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // middleware
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -24,7 +30,7 @@ connectDb();
 
 // routes
 app.use("/api/auth", router);
-app.use("/api/task",router1);
+app.use("/api/tasks",router1);
 
 // 404 handler
 app.use((req, res, next) => {
