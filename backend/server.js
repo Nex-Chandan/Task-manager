@@ -4,9 +4,8 @@ import dotenv from "dotenv";
 import connectDb  from "./config/db.js";
 import router from "./routes/AuthRoutes.js"
 import router1 from "./routes/Taskroutes.js"
-
-
-
+import { errorHandler } from "./middleware/errorMiddleware.js";
+import AppError from "./utills/AppError.js";
 
 dotenv.config();
 

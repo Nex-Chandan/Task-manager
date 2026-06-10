@@ -8,7 +8,9 @@ const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    return next(new AppError("Please provide name, email and password", 400));
+    return next(
+      new AppError("Please provide name, email and password", 400)
+    );
   }
 
   const existingUser = await User.findOne({
@@ -16,7 +18,9 @@ const register = asyncHandler(async (req, res, next) => {
   });
 
   if (existingUser) {
-    return next(new AppError("Account with this email already exists", 409));
+    return next(
+      new AppError("Account with this email already exists", 409)
+    );
   }
 
   const user = await User.create({
@@ -39,53 +43,18 @@ const register = asyncHandler(async (req, res, next) => {
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide email and password",
-      });
-    }
-
-    
-    const user = await User.findByEmail(email);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    const isMatch = await user.comparePassword(password);
-
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    const token = generateToken(user._id);
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      token,
-      user: user.toPublicJSON(),
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error. Please try again later.",
-    });
+  if (!email || !password) {
+    return next(
+      new AppError("Please provide email and password", 400)
+    );
   }
 
-  // Must include password field (schema has select:false)
   const user = await User.findByEmail(email);
 
   if (!user || !(await user.comparePassword(password))) {
-    return next(new AppError("Invalid email or password", 401));
+    return next(
+      new AppError("Invalid email or password", 401)
+    );
   }
 
   const token = generateToken(user._id);
