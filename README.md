@@ -251,15 +251,3 @@ main
 | react-toastify   | Toast notifications      |
 
 ---
-
-## Author
-
-**Your Name**
-- GitHub: [@your-username](https://github.com/your-username)
-- LinkedIn: [your-linkedin](https://linkedin.com/in/your-linkedin)
-
----
-
-## License
-
-This project is licensed under the MIT License.
